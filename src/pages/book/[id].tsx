@@ -7,6 +7,7 @@ import {
 import style from "./[id].module.css";
 import fetchOneBook from "@/lib/fetch-one-book";
 import { useRouter } from "next/router";
+import Head from "next/head";
 const mockData = {
     id: 1,
     title: "한 입 크기로 잘라 먹는 리액트",
@@ -35,7 +36,7 @@ export const getStaticPaths = () => {
         // fallback옵션들 : false, "blocking", true
         // false: 404 NotFound
         // blocking: SSR 방식
-        // true: SSR 방식 + 데이터가 없는 Fallback형태로 돌려줌
+        // true: SSR 방식 + 데이터가 없는 Fallback형태로 반환
     };
 };
 
@@ -58,25 +59,52 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
 export default function Page({ book }: InferGetStaticPropsType<typeof getStaticProps>) {
     const router = useRouter();
 
-    if (router.isFallback) return "로딩중입니다.";
+    // og설정 시 SSG에서 isFallback 을 기본으로 설정하면 meta태그가 모두 빈 상태로 반영
+    // 때문에 기본 meta태그 설정
+    if (router.isFallback) {
+        return (
+            <>
+                <div>
+                    <Head>
+                        <title>한입 북스</title>
+                        <meta property="og:image" content="/thumbnail.png" />
+                        <meta property="eg:title" content="한입 북스" />
+                        <meta
+                            property="od:description"
+                            content="한입 북스에 등록된 도서들을 만나보세요!"
+                        />
+                    </Head>
+                    로딩중입니다.
+                </div>
+            </>
+        );
+    }
     if (!book) return "문제가 발생하였습니다 다시 시도해주세요.";
 
     const { id, title, subTitle, description, author, publisher, coverImgUrl } = book;
 
     return (
-        <div className={style.container}>
-            <div
-                style={{ backgroundImage: `url('${coverImgUrl}')` }}
-                className={style.cover_img_container}
-            >
-                <img src={coverImgUrl} />
+        <>
+            <Head>
+                <title>{title}</title>
+                <meta property="og:image" content={coverImgUrl} />
+                <meta property="eg:title" content={title} />
+                <meta property="od:description" content={description} />
+            </Head>
+            <div className={style.container}>
+                <div
+                    style={{ backgroundImage: `url('${coverImgUrl}')` }}
+                    className={style.cover_img_container}
+                >
+                    <img src={coverImgUrl} />
+                </div>
+                <div className={style.title}>{title}</div>
+                <div className={style.subTitle}>{subTitle}</div>
+                <div className={style.author}>
+                    {author} | {publisher}
+                </div>
+                <div className={style.description}>{description}</div>
             </div>
-            <div className={style.title}>{title}</div>
-            <div className={style.subTitle}>{subTitle}</div>
-            <div className={style.author}>
-                {author} | {publisher}
-            </div>
-            <div className={style.description}>{description}</div>
-        </div>
+        </>
     );
 }
