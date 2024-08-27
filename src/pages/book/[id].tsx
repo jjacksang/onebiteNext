@@ -68,9 +68,9 @@ export default function Page({ book }: InferGetStaticPropsType<typeof getStaticP
                     <Head>
                         <title>한입 북스</title>
                         <meta property="og:image" content="/thumbnail.png" />
-                        <meta property="eg:title" content="한입 북스" />
+                        <meta property="og:title" content="한입 북스" />
                         <meta
-                            property="od:description"
+                            property="og:description"
                             content="한입 북스에 등록된 도서들을 만나보세요!"
                         />
                     </Head>

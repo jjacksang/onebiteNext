@@ -50,8 +50,8 @@ export default function Page() {
             <Head>
                 <title>한입 북스 - 검색 결과</title>
                 <meta property="og:image" content="/thumbnail.png" />
-                <meta property="eg:title" content="한입 북스 - 검색 결과" />
-                <meta property="od:description" content="한입 북스에 등록된 도서들을 만나보세요!" />
+                <meta property="og:title" content="한입 북스 - 검색 결과" />
+                <meta property="og:description" content="한입 북스에 등록된 도서들을 만나보세요!" />
             </Head>
             {books.map((book) => (
                 <BookItem key={book.id} {...book} />
