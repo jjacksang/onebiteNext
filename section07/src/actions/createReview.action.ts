@@ -1,4 +1,8 @@
 "use server";
+
+// server action일 때 만약 파일 명을 createReviewAction.ts로 작성하면 action으로 인식을 하지 못함
+// createReviewAction.ts ===>>> createReview.action.ts 로 변경하니 자바스크립트 오류 해결
+
 export async function createReviewAction(formData: FormData) {
     const bookId = formData.get("bookId")?.toString();
     const content = formData.get("content")?.toString();
