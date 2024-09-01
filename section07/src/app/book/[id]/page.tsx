@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
+import { createReviewAction } from "@/actions/createReviewAction";
 
 // ======== generateStaticParams의 값 외엔 허용하지 않고 404 NotFound로 보낼 때 ========
 // export const dynamicParams = false;
@@ -8,8 +9,8 @@ export function generateStaticParams() {
     return [{ id: "1" }, { id: "2" }, { id: "3" }];
 }
 
-export default async function Page({ params }: { params: { id: string | string[] } }) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${params.id}`);
+async function BookDetail({ bookId }: { bookId: string }) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${bookId}`);
     if (!res.ok) {
         if (res.status === 404) {
             notFound();
@@ -22,7 +23,7 @@ export default async function Page({ params }: { params: { id: string | string[]
     const { id, title, subTitle, description, author, publisher, coverImgUrl } = book;
 
     return (
-        <div className={style.container}>
+        <section>
             <div
                 className={style.cover_img_container}
                 style={{ backgroundImage: `url('${coverImgUrl}')` }}
@@ -35,6 +36,28 @@ export default async function Page({ params }: { params: { id: string | string[]
                 {author} | {publisher}
             </div>
             <div className={style.description}>{description}</div>
+        </section>
+    );
+}
+
+function ReviewEditor({ bookId }: { bookId: string }) {
+    return (
+        <section>
+            <form action={createReviewAction}>
+                <input name="bookId" value={bookId} hidden />
+                <input required name="content" placeholder="리뷰 내용" />
+                <input required name="author" placeholder="작성자" />
+                <button type="submit">작성하기</button>
+            </form>
+        </section>
+    );
+}
+
+export default function Page({ params }: { params: { id: string } }) {
+    return (
+        <div className={style.container}>
+            <BookDetail bookId={params.id} />
+            <ReviewEditor bookId={params.id} />
         </div>
     );
 }

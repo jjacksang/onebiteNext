@@ -1,8 +1,19 @@
+import { notFound } from "next/navigation";
 import style from "./page.module.css";
+
+// ======== generateStaticParams의 값 외엔 허용하지 않고 404 NotFound로 보낼 때 ========
+// export const dynamicParams = false;
+
+export function generateStaticParams() {
+    return [{ id: "1" }, { id: "2" }, { id: "3" }];
+}
 
 export default async function Page({ params }: { params: { id: string | string[] } }) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${params.id}`);
     if (!res.ok) {
+        if (res.status === 404) {
+            notFound();
+        }
         return <div>오류가 발생하였습니다.</div>;
     }
 

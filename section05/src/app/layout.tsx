@@ -4,7 +4,9 @@ import style from "./layout.module.css";
 import { BookData } from "@/types";
 
 async function Footer() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`, {
+        cache: "force-cache",
+    });
     if (!res.ok) {
         return <div>제작 @winterlood</div>;
     }
