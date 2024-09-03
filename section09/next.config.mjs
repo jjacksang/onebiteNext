@@ -5,6 +5,15 @@ const nextConfig = {
             fullUrl: true,
         },
     },
+    images: {
+        domains: ["shopping-phinf.pstatic.net"],
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "**",
+            },
+        ],
+    },
 };
 
 export default nextConfig;

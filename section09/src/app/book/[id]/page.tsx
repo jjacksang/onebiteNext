@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
-import { ReviewData } from "@/types";
+import { BookData, ReviewData } from "@/types";
 import ReviewItem from "@/components/review-item";
 import ReviewEditor from "@/components/review-editor";
+import Image from "next/image";
+import { Metadata } from "next";
 
 // ======== generateStaticParams의 값 외엔 허용하지 않고 404 NotFound로 보낼 때 ========
 // export const dynamicParams = false;
@@ -30,7 +32,12 @@ async function BookDetail({ bookId }: { bookId: string }) {
                 className={style.cover_img_container}
                 style={{ backgroundImage: `url('${coverImgUrl}')` }}
             >
-                <img src={coverImgUrl} />
+                <Image
+                    src={coverImgUrl}
+                    width={240}
+                    height={300}
+                    alt={`도서 ${title}의 표지 이미지`}
+                />
             </div>
             <div className={style.title}>{title}</div>
             <div className={style.subTitle}>{subTitle}</div>
@@ -60,6 +67,31 @@ async function ReviewList({ bookId }: { bookId: string }) {
             ))}
         </section>
     );
+}
+
+export async function generateMetadata({
+    params,
+}: {
+    params: { id: string };
+}): Promise<Metadata | null> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${params.id}`, {
+        cache: "force-cache",
+    });
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
+
+    const book: BookData = await res.json();
+
+    return {
+        title: `${book.title} - 한입북스`,
+        description: `${book.description}`,
+        openGraph: {
+            title: `${book.title} - 한입북스`,
+            description: `${book.description}`,
+            images: [book.coverImgUrl],
+        },
+    };
 }
 
 export default function Page({ params }: { params: { id: string } }) {
