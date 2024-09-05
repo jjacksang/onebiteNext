@@ -35,7 +35,7 @@ async function AllBooks() {
 }
 
 async function RecoBooks() {
-    await delay(3000);
+    await delay(1500);
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/random`, {
         next: { revalidate: 3 },
     });
