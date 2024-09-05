@@ -9,8 +9,16 @@ import { Metadata } from "next";
 // ======== generateStaticParams의 값 외엔 허용하지 않고 404 NotFound로 보낼 때 ========
 // export const dynamicParams = false;
 
-export function generateStaticParams() {
-    return [{ id: "1" }, { id: "2" }, { id: "3" }];
+export async function generateStaticParams() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`);
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
+
+    const books: BookData[] = await res.json();
+    return books.map((book) => ({
+        id: book.id.toString(),
+    }));
 }
 
 async function BookDetail({ bookId }: { bookId: string }) {

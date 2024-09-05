@@ -1,7 +1,6 @@
 "use server";
 
-import { delay } from "@/util/delay";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 // server action일 때 만약 파일 명을 createReviewAction.ts로 작성하면 action으로 인식을 하지 못함
 // createReviewAction.ts ===>>> createReview.action.ts 로 변경하니 자바스크립트 오류 해결
@@ -18,7 +17,6 @@ export async function createReviewAction(_: any, formData: FormData) {
         };
 
     try {
-        await delay(2000);
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/review`, {
             method: "POST",
             body: JSON.stringify({ bookId, content, author }),
